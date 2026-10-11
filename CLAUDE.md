@@ -37,6 +37,7 @@
 - LLM 출력은 `markdown_safety.safe_lines`를 거쳐 렌더링한다. 도구는 읽기 전용으로 유지하고, 쓰기 도구를 추가하려면 사람 승인 단계를 둔다.
 - API는 인증이 없으므로 외부 노출(LoadBalancer/Ingress/NodePort)을 하지 않는다.
 - CI 액션은 커밋 SHA로 고정하고 잡별 최소 권한(`permissions`)을 유지한다.
+- 사람이 쓰는 커밋 메시지에는 `[skip ci]` 문자열을 넣지 않는다 (본문에 있어도 GitHub가 CI를 건너뛴다). 이 표시는 CI의 배포 태그 커밋 전용이다. CI만 다시 돌리려면 `gh workflow run CI`.
 - 커밋 작성자 이메일은 GitHub noreply 주소를 쓴다 (저장소 로컬 git 설정).
 
 ## Code Rules

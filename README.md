@@ -64,7 +64,7 @@ pytest                            # 조회 계층 테스트
 외부에 공개하지 않는 학습용 배포다. API 키 없이 Mac의 Ollama를 사용한다.
 
 ```
-push → GitHub Actions: 테스트 + pip-audit → arm64 이미지 빌드 → GHCR 푸시 → k8s/ 이미지 태그 커밋
+push → GitHub Actions: 테스트 + pip-audit + 매니페스트 검증(kubeconform) → arm64 이미지 빌드 → GHCR 푸시 → k8s/ 이미지 태그 커밋
                                                                           ↓
                          로컬 쿠버네티스(Docker Desktop)의 Argo CD가 감지 → 자동 배포
                                    └ 앱 Pod → host.docker.internal:11434 (Mac의 Ollama, GPU 사용)
@@ -74,7 +74,7 @@ push → GitHub Actions: 테스트 + pip-audit → arm64 이미지 빌드 → GH
 |---|---|
 | `Dockerfile`, `docker/start.sh` | 이미지 하나로 UI(기본)와 API 실행. 시작 시 가상 데이터 시드, non-root |
 | `requirements.lock` | 이미지용 고정 의존성 |
-| `.github/workflows/ci.yml` | CI/CD. 액션은 커밋 SHA로 고정, 잡별 최소 권한 |
+| `.github/workflows/ci.yml` | CI/CD. 액션은 커밋 SHA로 고정, 잡별 최소 권한. 태그 갱신은 최신 main에 rebase 후 재시도하고, 더 새 코드 커밋이 있으면 건너뛰어 옛 이미지로 되돌아가지 않음 |
 | `k8s/` | Kustomize 매니페스트 (ClusterIP만, read-only 루트 파일시스템) |
 | `argocd/application.yaml` | Argo CD 자동 동기화 설정 |
 
