@@ -10,4 +10,4 @@ resources:
 images:
   - name: ghcr.io/ein214/settlement-assistant
     # CI가 배포 때마다 커밋으로 갱신한다
-    newTag: does-not-exist
+    newTag: sha-fe4958a4da46b3a0947dfefbdcfb836fba463328
