@@ -6,6 +6,8 @@ on:
     # k8s/ 수정도 검증해야 하므로 무시하지 않는다. CI의 태그 갱신 커밋은 [skip ci]로 루프를 막는다
     paths-ignore: ["**.md"]
   pull_request:
+  # 커밋 없이 수동 재실행 (gh workflow run CI)
+  workflow_dispatch:
 
 # 기본은 읽기 전용, 필요한 잡에서만 권한을 연다
 permissions:
@@ -60,7 +62,7 @@ jobs:
 
   image:
     needs: [test, manifests]
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     # 배포 대상이 Apple Silicon(arm64) 로컬 클러스터라 arm64 러너에서 네이티브 빌드
     runs-on: ubuntu-24.04-arm
     permissions:
