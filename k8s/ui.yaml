@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: settlement-ui
+  labels: { app: settlement-ui }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: settlement-ui }
+  template:
+    metadata:
+      labels: { app: settlement-ui }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: app
+          image: ghcr.io/ein214/settlement-assistant
+          ports:
+            - containerPort: 8501
+          envFrom:
+            - configMapRef: { name: settlement-config }
+          readinessProbe:
+            httpGet: { path: /_stcore/health, port: 8501 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 768Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: data, mountPath: /app/data }
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: data, emptyDir: {} }
+        - { name: tmp, emptyDir: {} }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: settlement-ui
+spec:
+  # 외부 노출 없음. 접근은 kubectl port-forward로만
+  type: ClusterIP
+  selector: { app: settlement-ui }
+  ports:
+    - port: 8501
+      targetPort: 8501

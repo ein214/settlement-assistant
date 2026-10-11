@@ -1,0 +1,29 @@
+[project]
+name = "settlement-assistant"
+version = "0.1.0"
+description = "사내 정산 담당자용 정산비율·이력 조회 어시스턴트 (Claude tool use)"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=1.11",
+    "ollama>=0.6",
+    "fastapi",
+    "uvicorn[standard]",
+    "streamlit",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"settlement.db" = ["*.sql"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

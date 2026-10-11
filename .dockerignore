@@ -1,0 +1,16 @@
+# 비밀값·로컬 상태는 이미지에 절대 넣지 않는다
+.env
+.env.*
+!.env.example
+.venv/
+.git/
+.github/
+.claude/
+data/*.db
+**/__pycache__/
+.pytest_cache/
+*.egg-info/
+k8s/
+argocd/
+tests/
+build/
